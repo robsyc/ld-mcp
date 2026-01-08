@@ -1,2 +1,3 @@
-# ld-spec-mcp
+# Linked Data MCP
+
 Python FastAPI-based [MCP](https://modelcontextprotocol.io/docs/getting-started/intro) server for QA over W3C semantic web and linked data standard specifications: [RDF](https://www.w3.org/1999/02/22-rdf-syntax-ns), [RDFS](https://www.w3.org/2000/01/rdf-schema#), [SPARQL](https://www.w3.org/TR/2013/REC-sparql11-overview-20130321/), [OWL](https://www.w3.org/2002/07/owl#), [SHACL](https://www.w3.org/ns/shacl#) and other popular vocabularies like [FOAF](http://xmlns.com/foaf/spec/), [SKOS](http://www.w3.org/2004/02/skos/core#), [PROV](https://www.w3.org/ns/prov#), [CITO](http://purl.org/spar/cito/), [OWL-Time](http://www.w3.org/2006/time#), [DASH](http://datashapes.org/dash#), [SCHEMA.ORG](https://schema.org/) and many more to come!
