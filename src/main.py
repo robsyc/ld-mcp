@@ -103,19 +103,30 @@ async def list_specifications(
             "family": family_upper,
             "description": family_data.get("comment", ""),
             "specifications": [
-                {"key": s["key"], "label": s["label"], "version": s.get("version")}
+                {
+                    "key": s["key"], 
+                    "label": s["label"], 
+                    "comment": s["comment"],
+                    "version": s.get("version")
+                }
                 for s in family_data.get("specifications", [])
             ],
             "namespaces": [
-                {"key": n["key"], "label": n["label"]}
+                {
+                    "key": n["key"],
+                    "label": n["label"],
+                    "comment": n["comment"],
+                    "version": n.get("version")
+                }
                 for n in family_data.get("namespaces", [])
-            ]
+            ],
+            "usage": "Use list_sections(<spec_key>) for TOC or list_resources(<ns_key>) for resources"
         }
     
     # Return overview of all families
     result = {
         "families": {},
-        "usage": "Use list_specifications(family='RDF') for details, or list_sections(spec_key='rdf12-primer') for TOC"
+        "usage": "Use list_specifications(<family_key>) for details"
     }
     
     for key, data in index.items():
