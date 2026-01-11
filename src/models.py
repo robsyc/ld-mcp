@@ -2,9 +2,9 @@
 Data models for the Linked Data MCP server.
 """
 
-from typing import Optional, Literal
-from pydantic import BaseModel, Field
+from typing import Optional
 
+from pydantic import BaseModel, Field
 
 # --- Index Models ---
 
@@ -50,7 +50,7 @@ class CachedSpec(BaseModel):
     fetched_at: str = Field(description="ISO timestamp of when content was fetched")
     toc: list[TOCItem] = Field(default_factory=list)
     sections: dict[str, str] = Field(
-        default_factory=dict, 
+        default_factory=dict,
         description="Section ID -> markdown content mapping"
     )
 

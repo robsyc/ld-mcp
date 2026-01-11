@@ -1,3 +1,87 @@
 # Linked Data MCP
 
-Python FastAPI-based [MCP](https://modelcontextprotocol.io/docs/getting-started/intro) server for QA over W3C semantic web and linked data standard specifications: [RDF](https://www.w3.org/1999/02/22-rdf-syntax-ns), [RDFS](https://www.w3.org/2000/01/rdf-schema#), [SPARQL](https://www.w3.org/TR/2013/REC-sparql11-overview-20130321/), [OWL](https://www.w3.org/2002/07/owl#), [SHACL](https://www.w3.org/ns/shacl#) and other popular vocabularies like [FOAF](http://xmlns.com/foaf/spec/), [SKOS](http://www.w3.org/2004/02/skos/core#), [PROV](https://www.w3.org/ns/prov#), [CITO](http://purl.org/spar/cito/), [OWL-Time](http://www.w3.org/2006/time#), [DASH](http://datashapes.org/dash#), [SCHEMA.ORG](https://schema.org/) and many more to come!
+MCP server for AI agents to progressively access W3C Semantic Web specifications.
+
+## Supported Standards
+
+| Family | Specifications | Namespace |
+|--------|---------------|-----------|
+| **RDF** | RDF 1.1/1.2 Primer, Concepts, Semantics, Turtle, TriG, N-Triples, N-Quads, JSON-LD | `rdf:`, `rdfs:` |
+| **SPARQL** | SPARQL 1.1/1.2 Query, Update, Overview | - |
+| **OWL** | OWL 2 Primer, Overview, Syntax, Profiles, RDF Mapping | `owl:` |
+| **SHACL** | SHACL 1.1/1.2 Core, Advanced Features, SPARQL, Node Expressions, Rules | `sh:` |
+| **SKOS** | SKOS Primer, Reference | `skos:` |
+| **PROV** | PROV Primer, Data Model, Ontology | `prov:` |
+
+## Installation
+
+```bash
+git clone <repo-url>
+cd ld-mcp
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -e ".[dev]"
+```
+
+## Usage
+
+### With Claude Desktop
+
+Add to your Claude Desktop MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "ld-mcp": {
+      "command": "python",
+      "args": ["/path/to/ld-mcp/src/main.py"]
+    }
+  }
+}
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `list_specifications(family?)` | Browse spec families (RDF, SPARQL, OWL, SHACL, SKOS, PROV) |
+| `list_sections(spec_key, depth?)` | Get TOC with section IDs in `[brackets]` |
+| `get_section(spec_key, section_id)` | Get markdown content for a section |
+| `list_resources(ns_key)` | List classes/properties in a namespace |
+| `get_resource(ns_key, resource)` | Get Turtle definition of a resource |
+
+## Development
+
+```bash
+# Run tests (fast, core functionality)
+pytest tests/test_specs.py -v -m "not slow"
+
+# Run full validation (all 42 specs + 6 namespaces)
+python tests/validate_all.py
+
+# Lint
+ruff check src/ tests/
+```
+
+## Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SPEC_VERSIONS` | Filter specs by version (e.g., `"1.2"` or `"1.1,1.2"`) | All versions |
+| `CACHE_TTL` | Cache TTL in seconds | `86400` (24h) |
+
+## Architecture
+
+```
+src/
+├── main.py       # MCP server and tools
+├── config.py     # Settings and index
+├── models.py     # Data models
+├── cache.py      # In-memory TTL cache
+├── fetch.py      # HTTP client
+├── parsers/      # HTML/RDF parsing
+│   ├── toc.py    # TOC extraction (W3C + ReSpec)
+│   ├── content.py
+│   └── namespace.py
+└── index.json    # Spec metadata
+```
