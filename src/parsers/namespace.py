@@ -52,20 +52,31 @@ def extract_resources(graph: Graph, ns_uri: str) -> list[dict]:
 
 
 def get_resource_turtle(graph: Graph, ns_uri: str, local_name: str) -> str:
-    """Extract triples for a resource and serialize as Turtle."""
+    """Extract all triples where resource is subject, predicate, or object, as Turtle."""
     uri_variants = _normalize_uri_variants(ns_uri)
 
-    # Create subgraph with just this resource's triples
+    # Gather all URIRefs (http/https forms)
+    uris = set(URIRef(uri_base + local_name) for uri_base in uri_variants)
+
+    # Create subgraph with all triples where resource occurs in any position
     subgraph = Graph()
     for prefix, ns in NAMESPACES.items():
         subgraph.bind(prefix, ns)
 
-    for uri_base in uri_variants:
-        uri = URIRef(uri_base + local_name)
-        for p, o in graph.predicate_objects(uri):
+    for uri in uris:
+        # Resource as subject
+        for p, o in graph.predicate_objects(subject=uri):
             subgraph.add((uri, p, o))
+        # Resource as predicate
+        for s, o in graph.subject_objects(predicate=uri):
+            subgraph.add((s, uri, o))
+        # Resource as object
+        for s, p in graph.subject_predicates(object=uri):
+            subgraph.add((s, p, uri))
 
     if len(subgraph) == 0:
         return ""
 
-    return subgraph.serialize(format="turtle")
+    turtle = subgraph.serialize(format="turtle")
+    lines = [line for line in turtle.splitlines() if not line.startswith("@prefix")]
+    return "\n".join(lines).strip()

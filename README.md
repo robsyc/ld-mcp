@@ -9,14 +9,14 @@ MCP server for AI agents to progressively access W3C Semantic Web specifications
 | **RDF** | RDF 1.1/1.2 Primer, Concepts, Semantics, Turtle, TriG, N-Triples, N-Quads, JSON-LD | `rdf:`, `rdfs:` |
 | **SPARQL** | SPARQL 1.1/1.2 Query, Update, Overview | - |
 | **OWL** | OWL 2 Primer, Overview, Syntax, Profiles, RDF Mapping | `owl:` |
-| **SHACL** | SHACL 1.1/1.2 Core, Advanced Features, SPARQL, Node Expressions, Rules | `sh:` |
+| **SHACL** | SHACL 1.1/1.2 Core, Advanced Features, SPARQL, Node Expressions, Rules, UI | `sh:` |
 | **SKOS** | SKOS Primer, Reference | `skos:` |
 | **PROV** | PROV Primer, Data Model, Ontology | `prov:` |
 
 ## Installation
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/robsyc/ld-mcp
 cd ld-mcp
 python -m venv venv
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
@@ -24,6 +24,16 @@ pip install -e ".[dev]"
 ```
 
 ## Usage
+
+### Run Server Locally
+
+```bash
+# stdio transport is the traditional way to connect MCP servers to clients
+python src/main.py
+
+# the HTTP transport enables remote connections
+fastmcp run src/main.py:mcp --transport http --port 8000
+```
 
 ### With Claude Desktop
 
