@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Full validation of all specifications and namespaces in index.json.
+Full validation of all specifications and namespaces in index.yaml.
 
 Run with: python tests/validate_all.py
 """

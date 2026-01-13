@@ -93,5 +93,5 @@ src/
 │   ├── toc.py    # TOC extraction (W3C + ReSpec)
 │   ├── content.py
 │   └── namespace.py
-└── index.json    # Spec metadata
+└── index.yaml    # Spec metadata
 ```
