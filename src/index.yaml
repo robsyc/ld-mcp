@@ -1,0 +1,254 @@
+RDF:
+  comment: Resource Description Framework - A framework for representing information in the Web using **triples**
+  specifications:
+  - key: rdf11-primer
+    label: RDF 1.1 Primer
+    comment: Introduction to RDF with examples and use cases. This primer is designed to provide the reader with the basic
+      knowledge required to effectively use RDF.
+    uri: https://www.w3.org/TR/rdf11-primer/
+    version: '1.1'
+  - key: rdf11-concepts
+    label: RDF 1.1 Concepts and Abstract Syntax
+    comment: Defines an abstract syntax (data model) for RDF. Introduces key concepts, terminology, datatyping and fragment
+      identifier handling.
+    uri: https://www.w3.org/TR/rdf11-concepts/
+    version: '1.1'
+  - key: rdfs11
+    label: RDF Schema 1.1
+    comment: RDF Schema provides a data-modelling vocabulary for RDF data. RDF Schema is an extension of the basic RDF vocabulary.
+    uri: https://www.w3.org/TR/rdf-schema/
+    version: '1.1'
+  - key: rdf11-semantics
+    label: RDF 1.1 Semantics
+    comment: Precise semantics for RDF 1.1 and RDF Schema. Defines entailment regimes and formal specification of truth preservation.
+    uri: https://www.w3.org/TR/rdf11-mt/
+    version: '1.1'
+  - key: rdf11-ntriples
+    label: RDF 1.1 N-Triples
+    comment: N-Triples is a line-based, plain text format for encoding an RDF graph.
+    uri: https://www.w3.org/TR/n-triples/
+    version: '1.1'
+  - key: rdf11-nquads
+    label: RDF 1.1 N-Quads
+    comment: N-Quads is a line-based, plain text format for encoding an RDF dataset.
+    uri: https://www.w3.org/TR/n-quads/
+    version: '1.1'
+  - key: rdf11-turtle
+    label: RDF 1.1 Turtle
+    comment: Terse RDF Triple Language - compact and natural text form with abbreviations for common patterns and datatypes.
+    uri: https://www.w3.org/TR/turtle/
+    version: '1.1'
+  - key: rdf11-trig
+    label: RDF 1.1 TriG
+    comment: TriG extends Turtle to support representing complete RDF Datasets with named graphs.
+    uri: https://www.w3.org/TR/trig/
+    version: '1.1'
+  - key: json-ld11
+    label: JSON-LD 1.1
+    comment: JSON-based format to serialize Linked Data. Designed to integrate into systems using JSON with smooth upgrade
+      path.
+    uri: https://www.w3.org/TR/json-ld/
+    version: '1.1'
+  - key: rdf12-new
+    label: What's New in RDF 1.2
+    comment: Summary of changes introduced in RDF version 1.2.
+    uri: https://w3c.github.io/rdf-new/spec/
+    version: '1.2'
+  - key: rdf12-primer
+    label: RDF 1.2 Primer
+    comment: Introduction to RDF 1.2 with examples and use cases for effective RDF usage.
+    uri: https://www.w3.org/TR/rdf12-primer/
+    version: '1.2'
+  - key: rdf12-concepts
+    label: RDF 1.2 Concepts and Abstract Data Model
+    comment: Defines the abstract syntax (data model) linking all RDF-based languages and specifications.
+    uri: https://www.w3.org/TR/rdf12-concepts/
+    version: '1.2'
+  - key: rdfs12
+    label: RDF Schema 1.2
+    comment: RDF Schema provides a data-modelling vocabulary for RDF data, extending the basic RDF vocabulary.
+    uri: https://www.w3.org/TR/rdf12-schema/
+    version: '1.2'
+  - key: rdf12-semantics
+    label: RDF 1.2 Semantics
+    comment: Precise semantics for RDF 1.2 and RDF Schema with entailment regimes.
+    uri: https://www.w3.org/TR/rdf12-semantics/
+    version: '1.2'
+  - key: rdf12-ntriples
+    label: RDF 1.2 N-Triples
+    comment: N-Triples line-based plain text format for RDF graphs (1.2 version).
+    uri: https://www.w3.org/TR/rdf12-n-triples/
+    version: '1.2'
+  - key: rdf12-nquads
+    label: RDF 1.2 N-Quads
+    comment: N-Quads line-based plain text format for RDF datasets (1.2 version).
+    uri: https://www.w3.org/TR/rdf12-n-quads/
+    version: '1.2'
+  - key: rdf12-turtle
+    label: RDF 1.2 Turtle
+    comment: Terse RDF Triple Language syntax specification (1.2 version).
+    uri: https://www.w3.org/TR/rdf12-turtle/
+    version: '1.2'
+  - key: rdf12-trig
+    label: RDF 1.2 TriG
+    comment: TriG extends Turtle for complete RDF Datasets (1.2 version).
+    uri: https://www.w3.org/TR/rdf12-trig/
+    version: '1.2'
+  namespaces:
+  - key: rdf
+    label: RDF
+    comment: Definitions for rdf:type, Property, Statement, langString, List and more.
+    uri: https://www.w3.org/1999/02/22-rdf-syntax-ns#
+    version: '1.1'
+  - key: rdfs
+    label: RDFS
+    comment: Definitions for rdfs:Resource, Class, Literal, subClassOf, label, domain, range, seeAlso and more.
+    uri: https://www.w3.org/2000/01/rdf-schema#
+    version: '1.1'
+SPARQL:
+  comment: SPARQL Protocol and RDF Query Language - Query language for RDF data
+  specifications:
+  - key: sparql11-overview
+    label: SPARQL 1.1 Overview
+    comment: Overview of SPARQL 1.1 - introduction to W3C specifications for querying and manipulating RDF content.
+    uri: https://www.w3.org/TR/sparql11-overview/
+    version: '1.1'
+  - key: sparql11-query
+    label: SPARQL 1.1 Query Language
+    comment: Syntax and semantics of SPARQL query language. Covers graph patterns, aggregation, subqueries, negation, expressions.
+    uri: https://www.w3.org/TR/sparql11-query/
+    version: '1.1'
+  - key: sparql11-update
+    label: SPARQL 1.1 Update
+    comment: SPARQL 1.1 Update - operations to update, create, and remove RDF graphs in a Graph Store.
+    uri: https://www.w3.org/TR/sparql11-update/
+    version: '1.1'
+  - key: sparql12-overview
+    label: SPARQL 1.2 Overview
+    comment: Overview of SPARQL 1.2 specifications for querying and manipulating RDF graph content.
+    uri: https://w3c.github.io/sparql-concepts/spec/
+    version: '1.2'
+  - key: sparql12-query
+    label: SPARQL 1.2 Query Language
+    comment: SPARQL 1.2 query language syntax and semantics with graph patterns, aggregation, subqueries.
+    uri: https://www.w3.org/TR/sparql12-query/
+    version: '1.2'
+  - key: sparql12-update
+    label: SPARQL 1.2 Update
+    comment: SPARQL 1.2 Update language for RDF graphs - operations to update, create, remove graphs.
+    uri: https://www.w3.org/TR/sparql12-update/
+    version: '1.2'
+OWL:
+  comment: Web Ontology Language - A language for defining and instantiating Web ontologies
+  specifications:
+  - key: owl2-primer
+    label: OWL 2 Web Ontology Language Primer
+    comment: Approachable introduction to OWL 2 for ontology development, including orientation for those from other disciplines.
+    uri: https://www.w3.org/TR/owl2-primer/
+  - key: owl2-overview
+    label: OWL 2 Web Ontology Language Document Overview
+    comment: Quick overview of OWL 2 specification including relationship to OWL 1. Primary reference point for OWL 2.
+    uri: https://www.w3.org/TR/owl2-overview/
+  - key: owl2-syntax
+    label: OWL 2 Web Ontology Language Structural Specification and Functional-Style Syntax
+    comment: Defines OWL 2 ontology constructs, structure, functional-style syntax, and OWL 2 DL restrictions.
+    uri: https://www.w3.org/TR/owl2-syntax/
+  - key: owl2-rdf-mapping
+    label: OWL 2 Web Ontology Language Mapping to RDF Graphs
+    comment: Mapping of OWL 2 constructs into RDF graphs - primary means of exchanging OWL 2 ontologies.
+    uri: http://www.w3.org/TR/owl2-mapping-to-rdf/
+  - key: owl2-profiles
+    label: OWL 2 Web Ontology Language Profiles
+    comment: Specification of OWL 2 profiles (fragments) that can be more simply/efficiently implemented.
+    uri: https://www.w3.org/TR/owl2-profiles/
+  namespaces:
+  - key: owl
+    label: OWL 2
+    comment: Definitions for owl:Thing, Nothing, Class, ObjectProperty, DatatypeProperty, AnnotationProperty and more.
+    uri: https://www.w3.org/2002/07/owl#
+SHACL:
+  comment: Shapes Constraint Language - A language for validating RDF graphs against a set of conditions
+  specifications:
+  - key: shacl11
+    label: Shapes Constraint Language (SHACL)
+    comment: SHACL Shapes Constraint Language for validating RDF graphs against conditions.
+    uri: https://www.w3.org/TR/shacl/
+    version: '1.1'
+  - key: shacl11-af
+    label: SHACL Advanced Features
+    comment: 'Advanced SHACL features: custom targets, annotation properties, user-defined functions, node expressions, rules.'
+    uri: https://www.w3.org/TR/shacl-af/
+    version: '1.1'
+  - key: shacl12-overview
+    label: SHACL 1.2 Overview
+    comment: Overview of SHACL for validation, query extensions, UI generation, rule-based reasoning and data profiling.
+    uri: https://w3c.github.io/data-shapes/shacl12-overview/
+    version: '1.2'
+  - key: shacl12-core
+    label: SHACL 1.2 Core
+    comment: Core SHACL 1.2 Shapes Constraint Language for validating RDF graphs.
+    uri: https://www.w3.org/TR/shacl12-core/
+    version: '1.2'
+  - key: shacl12-sparql
+    label: SHACL 1.2 SPARQL Extensions
+    comment: SPARQL-related SHACL extensions for enhanced expressiveness beyond Core.
+    uri: https://www.w3.org/TR/shacl12-sparql/
+    version: '1.2'
+  - key: shacl12-node-expr
+    label: SHACL 1.2 Node Expressions
+    comment: Graph expressions for dynamically determining focus nodes in SHACL.
+    uri: https://www.w3.org/TR/shacl12-node-expr/
+    version: '1.2'
+  - key: shacl12-rules
+    label: SHACL 1.2 Rules
+    comment: SHACL inference rules for deriving new RDF triples using declarative rules. Enables reasoning and data enrichment.
+    uri: https://www.w3.org/TR/shacl12-rules/
+    version: '1.2'
+  - key: shacl12-ui
+    label: SHACL 1.2 UI
+    comment: SHACL User Interfaces specification for UI generation from shapes.
+    uri: https://w3c.github.io/data-shapes/shacl12-ui/
+    version: '1.2'
+  namespaces:
+  - key: sh
+    label: SHACL
+    comment: Definitions for sh:NodeShape, PropertyShape, property, path, node, minCount, message and more.
+    uri: https://www.w3.org/ns/shacl#
+    version: '1.1'
+SKOS:
+  comment: Simple Knowledge Organization System - A common data model for sharing and linking knowledge organization systems
+  specifications:
+  - key: skos-primer
+    label: SKOS Primer
+    comment: User guide for representing concept schemes using SKOS.
+    uri: https://www.w3.org/TR/skos-primer/
+  - key: skos-reference
+    label: SKOS Reference
+    comment: Normative SKOS specification for information system designers with RDF/OWL knowledge.
+    uri: https://www.w3.org/TR/skos-reference/
+  namespaces:
+  - key: skos
+    label: SKOS
+    comment: Definitions for skos:Collection, Concept, ConceptScheme, prefLabel, altLabel, broader, narrower, related and
+      more.
+    uri: http://www.w3.org/2004/02/skos/core#
+PROV:
+  comment: PROV Ontology - An OWL2 ontology to support the interchange of provenance information
+  specifications:
+  - key: prov-primer
+    label: PROV Model Primer
+    comment: Intuitive introduction to PROV Data Model for provenance interchange on the web.
+    uri: http://www.w3.org/TR/prov-primer/
+  - key: prov-dm
+    label: 'PROV-DM: The PROV Data Model'
+    comment: Conceptual data model forming the basis for W3C provenance (PROV) specifications.
+    uri: http://www.w3.org/TR/prov-dm/
+  - key: prov-o
+    label: 'PROV-O: The PROV Ontology'
+    comment: PROV Ontology expressing PROV Data Model using OWL2 Web Ontology Language.
+    uri: https://www.w3.org/TR/prov-o/
+  namespaces:
+  - key: prov
+    label: PROV-O
+    comment: Definitions for prov:Entity, Activity, Agent, wasGeneratedBy, used and more.
+    uri: https://www.w3.org/ns/prov#

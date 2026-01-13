@@ -2,10 +2,10 @@
 Configuration for the Linked Data MCP server.
 """
 
-import json
 from pathlib import Path
 from typing import Optional
 
+import yaml
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -52,19 +52,19 @@ settings = Settings()
 
 
 def get_index_path() -> Path:
-    """Get path to the index.json file."""
-    return Path(__file__).parent / "index.json"
+    """Get path to the index.yaml file."""
+    return Path(__file__).parent / "index.yaml"
 
 
 def load_index() -> dict:
-    """Load the specification index from index.json."""
+    """Load the specification index from index.yaml."""
     with open(get_index_path()) as f:
-        return json.load(f)
+        return yaml.safe_load(f)
 
 
 def get_filtered_index() -> dict:
     """
-    Load index.json and filter specifications based on SPEC_VERSIONS.
+    Load index.yaml and filter specifications based on SPEC_VERSIONS.
 
     Returns the index with specs filtered according to the version setting.
     Specs without a version field are always included.
