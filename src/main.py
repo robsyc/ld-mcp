@@ -14,6 +14,8 @@ from typing import Optional
 
 from bs4 import BeautifulSoup
 from mcp.server.fastmcp import FastMCP
+from mcp.shared.exceptions import McpError
+from mcp.types import ErrorData
 
 from cache import cache
 from config import get_filtered_index
@@ -125,7 +127,7 @@ def _get_namespace_graph(ns_key: str, uri: str):
 
 
 @mcp.tool()
-async def list_specifications(family: Optional[str] = None) -> dict:
+async def list_specifications(family: Optional[str] = None) -> str:
     """
     List available specification families or get details for a specific family.
 
@@ -134,55 +136,56 @@ async def list_specifications(family: Optional[str] = None) -> dict:
                 If not provided, returns overview of all families.
 
     Returns:
-        Overview of specs with their short keys for use with other tools.
+        Markdown formatted list of specifications.
     """
     index = get_filtered_index()
 
     if family:
         family_upper = family.upper()
         if family_upper not in index:
-            available = list(index.keys())
-            return {"error": f"Unknown family '{family}'. Available: {available}"}
+            available = ", ".join(index.keys())
+            raise McpError(
+                ErrorData(code=-32602, message=f"Unknown family '{family}'. Available: {available}")
+            )
 
         family_data = index[family_upper]
-        return {
-            "family": family_upper,
-            "description": family_data.get("comment", ""),
-            "specifications": [
-                {
-                    "key": s["key"],
-                    "label": s["label"],
-                    "comment": s["comment"],
-                    "version": s.get("version"),
-                }
-                for s in family_data.get("specifications", [])
-            ],
-            "namespaces": [
-                {
-                    "key": n["key"],
-                    "label": n["label"],
-                    "comment": n["comment"],
-                    "version": n.get("version"),
-                }
-                for n in family_data.get("namespaces", [])
-            ],
-            "hint": "Use list_sections(spec_key) or list_resources(ns_key)",
-        }
+        lines = [f"# {family_upper}", "", family_data.get("comment", "")]
+
+        specs = family_data.get("specifications", [])
+        if specs:
+            lines.append("")
+            lines.append("## Specifications")
+            for s in specs:
+                lines.append(f"- `{s['key']}`: {s['comment']}")
+
+        namespaces = family_data.get("namespaces", [])
+        if namespaces:
+            lines.append("")
+            lines.append("## Namespaces")
+            for n in namespaces:
+                lines.append(f"- `{n['key']}`: {n['comment']}")
+
+        lines.append("\nHint: Use `list_sections(spec_key, depth)` to see available sections for a specification and `list_resources(ns_key)` to see available resources for a namespace.")
+
+        return "\n".join(lines)
 
     # Overview of all families
-    result = {"families": {}}
+    lines = ["# Linked Data Specifications", ""]
     for key, data in index.items():
-        result["families"][key] = {
-            "description": data.get("comment", ""),
-            "specs": len(data.get("specifications", [])),
-            "namespaces": len(data.get("namespaces", [])),
-        }
-    result["hint"] = "Use list_specifications(family) for details"
-    return result
+        spec_count = len(data.get("specifications", []))
+        ns_count = len(data.get("namespaces", []))
+        ns_part = f", {ns_count} namespace{'s' if ns_count != 1 else ''}" if ns_count else ""
+        lines.append(
+            f"- {key} ({spec_count} spec{'s' if spec_count != 1 else ''}{ns_part}): {data.get('comment', '')}"
+        )
+    
+    lines.append("\nHint: Use `list_specifications(family)` to see available specifications and namespaces.")
+
+    return "\n".join(lines)
 
 
 @mcp.tool()
-async def list_sections(spec_key: str, depth: int = 2) -> dict:
+async def list_sections(spec_key: str, depth: int = 2) -> str:
     """
     Get the table of contents for a specification document.
 
@@ -191,74 +194,80 @@ async def list_sections(spec_key: str, depth: int = 2) -> dict:
         depth: How many levels deep to show (1=top level only, 2+=nested). Default: 2
 
     Returns:
-        Table of contents with section IDs in [brackets] for use with get_section().
+        Markdown formatted table of contents with section links.
     """
     spec_info = _get_spec_by_key(spec_key)
     if not spec_info:
-        available = _list_all_spec_keys()
-        return {"error": f"Unknown spec '{spec_key}'. Examples: {available}"}
+        available = ", ".join(_list_all_spec_keys())
+        raise McpError(
+            ErrorData(code=-32602, message=f"Unknown spec '{spec_key}'. Available: {available}")
+        )
 
     family_key, spec = spec_info
 
     try:
         toc = await _get_spec_toc(spec_key, spec["uri"])
     except Exception as e:
-        return {"error": f"Failed to fetch spec: {str(e)}"}
+        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch spec: {str(e)}"))
 
     if not toc:
-        return {"spec": spec_key, "error": "No table of contents found in this specification"}
+        raise McpError(ErrorData(code=-32603, message=f"No table of contents found in {spec_key}"))
 
-    # Format as indented text with section IDs
+    # Format as indented markdown links
     flat = flatten_toc(toc, max_depth=depth)
-    sections = []
+    lines = [f"# {spec_key}", ""]
     for item in flat:
-        indent = "  " * (item["depth"] - 1)
-        sections.append(f"{indent}{item['title']} [{item['id']}]")
+        indent = "\t" * (item["depth"] - 1)
+        lines.append(f"{indent}[{item['title']}]({item['id']})")
 
-    return {
-        "spec": spec_key,
-        "sections": sections,
-        "hint": "Use get_section(spec_key, section_id) with ID from brackets",
-    }
+    lines.append("\nHint: Use `get_section(spec_key, section_id)` to get the markdown content of a specific section.")
+
+    return "\n".join(lines)
 
 
 @mcp.tool()
-async def get_section(spec_key: str, section_id: str) -> dict:
+async def get_section(spec_key: str, section_id: str) -> str:
     """
     Get the markdown content of a specific section from a specification.
 
     Args:
         spec_key: Short key of the specification (e.g., 'rdf12-primer')
-        section_id: Section ID from list_sections() output (value in brackets)
+        section_id: Section ID from list_sections() output (the link target)
 
     Returns:
         Markdown content of the section.
     """
     spec_info = _get_spec_by_key(spec_key)
     if not spec_info:
-        return {"error": f"Unknown spec '{spec_key}'"}
+        available = ", ".join(_list_all_spec_keys())
+        raise McpError(
+            ErrorData(code=-32602, message=f"Unknown spec '{spec_key}'. Available: {available}")
+        )
 
     family_key, spec = spec_info
 
     try:
         soup = await _get_spec_soup(spec_key, spec["uri"])
     except Exception as e:
-        return {"error": f"Failed to fetch spec: {str(e)}"}
+        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch spec: {str(e)}"))
 
     content = extract_section_content(soup, section_id)
 
     if not content:
-        # Try to help with available sections
         toc = await _get_spec_toc(spec_key, spec["uri"])
         flat = flatten_toc(toc, max_depth=3)
-        available = [item["id"] for item in flat]
-        return {"error": f"Section '{section_id}' not found", "available": available}
+        available = ", ".join(item["id"] for item in flat[:10])
+        raise McpError(
+            ErrorData(
+                code=-32602, message=f"Section '{section_id}' not found. Available: {available}..."
+            )
+        )
 
-    return {"spec": spec_key, "section": section_id, "content": content}
+    return content
 
 
 @mcp.tool()
-async def list_resources(ns_key: str) -> dict:
+async def list_resources(ns_key: str) -> str:
     """
     List all resources (classes, properties) defined in a namespace.
 
@@ -266,34 +275,46 @@ async def list_resources(ns_key: str) -> dict:
         ns_key: Short namespace key (e.g., 'rdf', 'rdfs', 'owl', 'sh', 'skos', 'prov')
 
     Returns:
-        List of resources with their types.
+        Markdown formatted list of resources grouped by type.
     """
     ns_info = _get_namespace_by_key(ns_key)
     if not ns_info:
-        available = _list_all_namespace_keys()
-        return {"error": f"Unknown namespace '{ns_key}'. Available: {available}"}
+        available = ", ".join(_list_all_namespace_keys())
+        raise McpError(
+            ErrorData(code=-32602, message=f"Unknown namespace '{ns_key}'. Available: {available}")
+        )
 
     family_key, ns = ns_info
 
     try:
         graph = _get_namespace_graph(ns_key, ns["uri"])
     except Exception as e:
-        return {"error": f"Failed to fetch namespace: {str(e)}"}
+        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch namespace: {str(e)}"))
 
     resources = extract_resources(graph, ns["uri"])
 
     if not resources:
-        return {"namespace": ns_key, "error": "No resources found in namespace"}
+        raise McpError(ErrorData(code=-32603, message=f"No resources found in {ns_key}"))
 
-    return {
-        "namespace": ns_key,
-        "resources": resources,
-        "hint": "Use get_resource(ns_key, name) for full Turtle definition",
-    }
+    # Group by type
+    by_type: dict[str, list[str]] = {}
+    for r in resources:
+        rtype = r.get("a") or "Other"
+        by_type.setdefault(rtype, []).append(r["name"])
+
+    lines = [f"# {ns_key}", ""]
+    for rtype, names in sorted(by_type.items()):
+        lines.append(f"## {rtype}")
+        lines.append(", ".join(sorted(names)))
+        lines.append("")
+    
+    lines.append("\nHint: Use `get_resource(ns_key, resource)` to get the full definition of a resource.")
+
+    return "\n".join(lines).rstrip()
 
 
 @mcp.tool()
-async def get_resource(ns_key: str, resource: str) -> dict:
+async def get_resource(ns_key: str, resource: str) -> str:
     """
     Get the full definition of a resource from a namespace as Turtle.
 
@@ -306,24 +327,31 @@ async def get_resource(ns_key: str, resource: str) -> dict:
     """
     ns_info = _get_namespace_by_key(ns_key)
     if not ns_info:
-        return {"error": f"Unknown namespace '{ns_key}'"}
+        available = ", ".join(_list_all_namespace_keys())
+        raise McpError(
+            ErrorData(code=-32602, message=f"Unknown namespace '{ns_key}'. Available: {available}")
+        )
 
     family_key, ns = ns_info
 
     try:
         graph = _get_namespace_graph(ns_key, ns["uri"])
     except Exception as e:
-        return {"error": f"Failed to fetch namespace: {str(e)}"}
+        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch namespace: {str(e)}"))
 
     turtle = get_resource_turtle(graph, ns["uri"], resource)
 
     if not turtle:
-        # Help with available resources
         resources = extract_resources(graph, ns["uri"])
-        available = [r["name"] for r in resources]
-        return {"error": f"Resource '{resource}' not found in {ns_key}", "available": available}
+        available = ", ".join(r["name"] for r in resources[:10])
+        raise McpError(
+            ErrorData(
+                code=-32602,
+                message=f"Resource '{resource}' not found in {ns_key}. Available: {available}...",
+            )
+        )
 
-    return {"resource": f"{ns_key}:{resource}", "turtle": turtle}
+    return turtle
 
 
 if __name__ == "__main__":
