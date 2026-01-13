@@ -178,7 +178,7 @@ async def list_specifications(family: Optional[str] = None) -> str:
         lines.append(
             f"- {key} ({spec_count} spec{'s' if spec_count != 1 else ''}{ns_part}): {data.get('comment', '')}"
         )
-    
+
     lines.append("\nHint: Use `list_specifications(family)` to see available specifications and namespaces.")
 
     return "\n".join(lines)
@@ -307,7 +307,7 @@ async def list_resources(ns_key: str) -> str:
         lines.append(f"## {rtype}")
         lines.append(", ".join(sorted(names)))
         lines.append("")
-    
+
     lines.append("\nHint: Use `get_resource(ns_key, resource)` to get the full definition of a resource.")
 
     return "\n".join(lines).rstrip()
