@@ -10,6 +10,12 @@ Environment variables:
     CACHE_TTL: Cache TTL in seconds (default: 86400)
 """
 
+import sys
+from pathlib import Path
+
+# Ensure src/ is in path for sibling imports (needed for FastMCP Cloud)
+sys.path.insert(0, str(Path(__file__).parent))
+
 from typing import Optional
 
 from bs4 import BeautifulSoup
