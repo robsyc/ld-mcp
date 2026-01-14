@@ -25,14 +25,14 @@ pip install -e ".[dev]"
 
 ## Usage
 
-### Run Server Locally
+### Run Server
 
 ```bash
-# stdio transport is the traditional way to connect MCP servers to clients
-python src/main.py
-
-# the HTTP transport enables remote connections
+# HTTP transport for local development/testing
 fastmcp run src/main.py:mcp --transport http --port 8000
+
+# stdio transport (used by MCP clients like Claude Desktop)
+fastmcp run src/main.py:mcp
 ```
 
 ### With Claude Desktop
