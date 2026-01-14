@@ -19,9 +19,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from typing import Optional
 
 from bs4 import BeautifulSoup
-from mcp.server.fastmcp import FastMCP
-from mcp.shared.exceptions import McpError
-from mcp.types import ErrorData
+from fastmcp import FastMCP
+from fastmcp.exceptions import ToolError
 
 from cache import cache
 from config import get_filtered_index
@@ -150,9 +149,7 @@ async def list_specifications(family: Optional[str] = None) -> str:
         family_upper = family.upper()
         if family_upper not in index:
             available = ", ".join(index.keys())
-            raise McpError(
-                ErrorData(code=-32602, message=f"Unknown family '{family}'. Available: {available}")
-            )
+            raise ToolError(f"Unknown family '{family}'. Available: {available}")
 
         family_data = index[family_upper]
         lines = [f"# {family_upper}", "", family_data.get("comment", "")]
@@ -205,19 +202,17 @@ async def list_sections(spec_key: str, depth: int = 2) -> str:
     spec_info = _get_spec_by_key(spec_key)
     if not spec_info:
         available = ", ".join(_list_all_spec_keys())
-        raise McpError(
-            ErrorData(code=-32602, message=f"Unknown spec '{spec_key}'. Available: {available}")
-        )
+        raise ToolError(f"Unknown spec '{spec_key}'. Available: {available}")
 
     family_key, spec = spec_info
 
     try:
         toc = await _get_spec_toc(spec_key, spec["uri"])
     except Exception as e:
-        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch spec: {str(e)}"))
+        raise ToolError(f"Failed to fetch spec: {str(e)}")
 
     if not toc:
-        raise McpError(ErrorData(code=-32603, message=f"No table of contents found in {spec_key}"))
+        raise ToolError(f"No table of contents found in {spec_key}")
 
     # Format as indented markdown links
     flat = flatten_toc(toc, max_depth=depth)
@@ -246,16 +241,14 @@ async def get_section(spec_key: str, section_id: str) -> str:
     spec_info = _get_spec_by_key(spec_key)
     if not spec_info:
         available = ", ".join(_list_all_spec_keys())
-        raise McpError(
-            ErrorData(code=-32602, message=f"Unknown spec '{spec_key}'. Available: {available}")
-        )
+        raise ToolError(f"Unknown spec '{spec_key}'. Available: {available}")
 
     family_key, spec = spec_info
 
     try:
         soup = await _get_spec_soup(spec_key, spec["uri"])
     except Exception as e:
-        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch spec: {str(e)}"))
+        raise ToolError(f"Failed to fetch spec: {str(e)}")
 
     content = extract_section_content(soup, section_id)
 
@@ -263,11 +256,7 @@ async def get_section(spec_key: str, section_id: str) -> str:
         toc = await _get_spec_toc(spec_key, spec["uri"])
         flat = flatten_toc(toc, max_depth=3)
         available = ", ".join(item["id"] for item in flat[:10])
-        raise McpError(
-            ErrorData(
-                code=-32602, message=f"Section '{section_id}' not found. Available: {available}..."
-            )
-        )
+        raise ToolError(f"Section '{section_id}' not found. Available: {available}...")
 
     return content
 
@@ -286,21 +275,19 @@ async def list_resources(ns_key: str) -> str:
     ns_info = _get_namespace_by_key(ns_key)
     if not ns_info:
         available = ", ".join(_list_all_namespace_keys())
-        raise McpError(
-            ErrorData(code=-32602, message=f"Unknown namespace '{ns_key}'. Available: {available}")
-        )
+        raise ToolError(f"Unknown namespace '{ns_key}'. Available: {available}")
 
     family_key, ns = ns_info
 
     try:
         graph = _get_namespace_graph(ns_key, ns["uri"])
     except Exception as e:
-        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch namespace: {str(e)}"))
+        raise ToolError(f"Failed to fetch namespace: {str(e)}")
 
     resources = extract_resources(graph, ns["uri"])
 
     if not resources:
-        raise McpError(ErrorData(code=-32603, message=f"No resources found in {ns_key}"))
+        raise ToolError(f"No resources found in {ns_key}")
 
     # Group by type
     by_type: dict[str, list[str]] = {}
@@ -334,28 +321,21 @@ async def get_resource(ns_key: str, resource: str) -> str:
     ns_info = _get_namespace_by_key(ns_key)
     if not ns_info:
         available = ", ".join(_list_all_namespace_keys())
-        raise McpError(
-            ErrorData(code=-32602, message=f"Unknown namespace '{ns_key}'. Available: {available}")
-        )
+        raise ToolError(f"Unknown namespace '{ns_key}'. Available: {available}")
 
     family_key, ns = ns_info
 
     try:
         graph = _get_namespace_graph(ns_key, ns["uri"])
     except Exception as e:
-        raise McpError(ErrorData(code=-32603, message=f"Failed to fetch namespace: {str(e)}"))
+        raise ToolError(f"Failed to fetch namespace: {str(e)}")
 
     turtle = get_resource_turtle(graph, ns["uri"], resource)
 
     if not turtle:
         resources = extract_resources(graph, ns["uri"])
         available = ", ".join(r["name"] for r in resources[:10])
-        raise McpError(
-            ErrorData(
-                code=-32602,
-                message=f"Resource '{resource}' not found in {ns_key}. Available: {available}...",
-            )
-        )
+        raise ToolError(f"Resource '{resource}' not found in {ns_key}. Available: {available}...")
 
     return turtle
 

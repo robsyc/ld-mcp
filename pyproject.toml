@@ -6,7 +6,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
-    "fastmcp>=2.14.2",
+    "fastmcp>=2.14.3",
     "httpx>=0.28.1",
     "beautifulsoup4>=4.14.3",
     "html-to-markdown>=2.20.0",
