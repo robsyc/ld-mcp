@@ -14,6 +14,8 @@ MCP server for AI agents to progressively access W3C Semantic Web specifications
 | **PROV** | PROV Primer, Data Model, Ontology | `prov:` |
 | **TIME** | OWL-Time | `time:` |
 
+See the `index.yaml` file for the full list of specifications and namespaces. Please feel free to submit a PR to add more specifications, parsers and namespaces.
+
 ## Quick Start
 
 ### Option 1: FastMCP Cloud (Recommended)
@@ -47,7 +49,7 @@ python src/main.py
 
 | Tool | Description |
 |------|-------------|
-| `list_specifications(family?)` | Browse spec families (RDF, SPARQL, OWL, SHACL, SKOS, PROV) |
+| `list_specifications(family?)` | Browse spec families (RDF, SPARQL, OWL, SHACL, SKOS, etc.) |
 | `list_sections(spec_key, depth?)` | Get TOC with section IDs |
 | `get_section(spec_key, section_id)` | Get markdown content for a section |
 | `list_resources(ns_key)` | List classes/properties in a namespace |
