@@ -16,7 +16,7 @@ MCP server for AI agents to progressively access W3C Semantic Web specifications
 | **PROV** | PROV Primer, Data Model, Ontology | `prov:` |
 | **TIME** | OWL-Time | `time:` |
 
-See the `index.yaml` file for the full list of specifications and namespaces. Please feel free to submit a PR to add more specifications, parsers and namespaces.
+See the `index.yaml` file for the full list of specifications and namespaces. Please feel free to submit a PR to add more specifications and parsers.
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ pip install -e .
 python src/main.py
 ```
 
-**Cursor/Claude Desktop** (local stdio):
+Add this to your `.claude/` or `.cursor/mcp.json` file:
 ```json
 {
   "mcpServers": {
