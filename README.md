@@ -2,7 +2,7 @@
 
 # Linked Data MCP
 
-MCP server for AI agents to progressively access W3C Semantic Web specifications.
+MCP server for AI agents to progressively access W3C Semantic Web specifications. Instead of dumping entire spec docs into the rotting context, it serves them section-by-section. Your AI can now look up that one SHACL 1.2 property it keeps forgetting about without burning 100k tokens.
 
 ## Supported Standards
 
