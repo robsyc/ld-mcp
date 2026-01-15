@@ -1,4 +1,5 @@
 .claude/
+.cursor/
 notebook.ipynb
 
 # Byte-compiled / optimized / DLL files

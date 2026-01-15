@@ -12,50 +12,43 @@ MCP server for AI agents to progressively access W3C Semantic Web specifications
 | **SHACL** | SHACL 1.1/1.2 Core, Advanced Features, SPARQL, Node Expressions, Rules, UI | `sh:` |
 | **SKOS** | SKOS Primer, Reference | `skos:` |
 | **PROV** | PROV Primer, Data Model, Ontology | `prov:` |
+| **TIME** | OWL-Time | `time:` |
 
-## Installation
+## Quick Start
 
-```bash
-git clone https://github.com/robsyc/ld-mcp
-cd ld-mcp
-python -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-pip install -e ".[dev]"
-```
+### Option 1: FastMCP Cloud (Recommended)
 
-## Usage
+Fork the repo, configure the `index.yaml` and deploy to your own [fastmcp.cloud](https://fastmcp.cloud) instance (free for personal use). Afterwards, you can use their web ui to connect your agentic coding tool (e.g. Cursor, Claude Desktop, etc.) to the MCP server.
 
-### Run Server
+### Option 2: Run Locally
 
 ```bash
-# HTTP transport for local development/testing
-fastmcp run src/main.py:mcp --transport http --port 8000
+git clone https://github.com/robsyc/ld-mcp && cd ld-mcp
+python -m venv venv && source venv/bin/activate
+pip install -e .
 
-# stdio transport (used by MCP clients like Claude Desktop)
-fastmcp run src/main.py:mcp
+# Run with stdio (for MCP clients)
+python src/main.py
 ```
 
-### With Claude Desktop
-
-Add to your Claude Desktop MCP configuration:
-
+**Cursor/Claude Desktop** (local stdio):
 ```json
 {
   "mcpServers": {
     "ld-mcp": {
       "command": "python",
-      "args": ["/path/to/ld-mcp/src/main.py"]
+      "args": ["/absolute/path/to/ld-mcp/src/main.py"]
     }
   }
 }
 ```
 
-### Available Tools
+## Available Tools
 
 | Tool | Description |
 |------|-------------|
 | `list_specifications(family?)` | Browse spec families (RDF, SPARQL, OWL, SHACL, SKOS, PROV) |
-| `list_sections(spec_key, depth?)` | Get TOC with section IDs in `[brackets]` |
+| `list_sections(spec_key, depth?)` | Get TOC with section IDs |
 | `get_section(spec_key, section_id)` | Get markdown content for a section |
 | `list_resources(ns_key)` | List classes/properties in a namespace |
 | `get_resource(ns_key, resource)` | Get Turtle definition of a resource |
@@ -63,38 +56,27 @@ Add to your Claude Desktop MCP configuration:
 ## Development
 
 ```bash
-# Validate all specs and namespaces from index.yaml
+pip install -e ".[dev]"
+
+# Validate all specs/namespaces
 pytest tests/test_index.py -v
 
 # Lint
 ruff check src/ tests/
+
+# Local HTTP server (for testing)
+fastmcp run src/main.py:mcp --transport http --port 8000
 ```
 
-### Adding New Specifications
+### Adding Specifications
 
 1. Add entry to `src/index.yaml`
-2. Run `pytest tests/test_index.py -v -k "your_spec_key"` to verify
-3. Push to main - CI validates all entries automatically
+2. Run `pytest tests/test_index.py -v -k "your_spec_key"`
+3. Push to main — CI validates automatically
 
 ## Configuration
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `SPEC_VERSIONS` | Filter specs by version (e.g., `"1.2"` or `"1.1,1.2"`) | All versions |
-| `CACHE_TTL` | Cache TTL in seconds | `86400` (24h) |
-
-## Architecture
-
-```
-src/
-├── main.py       # MCP server and tools
-├── config.py     # Settings and index
-├── models.py     # Data models
-├── cache.py      # In-memory TTL cache
-├── fetch.py      # HTTP client
-├── parsers/      # HTML/RDF parsing
-│   ├── toc.py    # TOC extraction (W3C + ReSpec)
-│   ├── content.py
-│   └── namespace.py
-└── index.yaml    # Spec metadata
-```
+| `SPEC_VERSIONS` | Filter by version (e.g., `"1.2"`) | All |
+| `CACHE_TTL` | Cache TTL in seconds | `86400` (24 hours) |
