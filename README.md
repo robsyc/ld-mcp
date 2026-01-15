@@ -1,6 +1,5 @@
 [![CI](https://github.com/robsyc/ld-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/robsyc/ld-mcp/actions/workflows/ci.yml)
 
-
 # Linked Data MCP
 
 MCP server for AI agents to progressively access W3C Semantic Web specifications.
