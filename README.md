@@ -36,8 +36,8 @@ python src/main.py
 {
   "mcpServers": {
     "ld-mcp": {
-      "command": "python",
-      "args": ["/absolute/path/to/ld-mcp/src/main.py"]
+      "command": "/home/user/path/to/ld-mcp/venv/bin/python",
+      "args": ["/home/user/path/to/ld-mcp/src/main.py"]
     }
   }
 }
