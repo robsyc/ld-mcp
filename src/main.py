@@ -10,12 +10,6 @@ Environment variables:
     CACHE_TTL: Cache TTL in seconds (default: 86400)
 """
 
-import sys
-from pathlib import Path
-
-# Ensure src/ is in path for sibling imports (needed for FastMCP Cloud)
-sys.path.insert(0, str(Path(__file__).parent))
-
 from typing import Optional
 
 from bs4 import BeautifulSoup
@@ -307,16 +301,18 @@ async def list_resources(ns_key: str) -> str:
 
 
 @mcp.tool()
-async def get_resource(ns_key: str, resource: str) -> str:
+async def get_resource(ns_key: str, resource: str, include_references: bool = False) -> str:
     """
     Get the full definition of a resource from a namespace as Turtle.
 
     Args:
         ns_key: Short namespace key (e.g., 'rdf', 'owl')
         resource: Local name (e.g., 'type', 'Class', 'Property')
+        include_references: If True, include triples where resource is used as
+                            predicate or object (shows how it's used). Default: False.
 
     Returns:
-        Turtle serialization of all triples defining this resource.
+        Turtle serialization of triples defining this resource.
     """
     ns_info = _get_namespace_by_key(ns_key)
     if not ns_info:
@@ -330,7 +326,9 @@ async def get_resource(ns_key: str, resource: str) -> str:
     except Exception as e:
         raise ToolError(f"Failed to fetch namespace: {str(e)}")
 
-    turtle = get_resource_turtle(graph, ns["uri"], resource)
+    turtle = get_resource_turtle(
+        graph, ns["uri"], resource, subject_only=not include_references
+    )
 
     if not turtle:
         resources = extract_resources(graph, ns["uri"])

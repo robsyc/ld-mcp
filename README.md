@@ -63,15 +63,18 @@ Add to your Claude Desktop MCP configuration:
 ## Development
 
 ```bash
-# Run tests (fast, core functionality)
-pytest tests/test_specs.py -v -m "not slow"
-
-# Run full validation (all 42 specs + 6 namespaces)
-python tests/validate_all.py
+# Validate all specs and namespaces from index.yaml
+pytest tests/test_index.py -v
 
 # Lint
 ruff check src/ tests/
 ```
+
+### Adding New Specifications
+
+1. Add entry to `src/index.yaml`
+2. Run `pytest tests/test_index.py -v -k "your_spec_key"` to verify
+3. Push to main - CI validates all entries automatically
 
 ## Configuration
 

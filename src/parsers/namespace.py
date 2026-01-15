@@ -4,13 +4,14 @@ from rdflib import RDF, Graph, URIRef
 
 # Standard namespace prefixes
 NAMESPACES = {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
     "owl": "http://www.w3.org/2002/07/owl#",
     "sh": "http://www.w3.org/ns/shacl#",
     "skos": "http://www.w3.org/2004/02/skos/core#",
     "prov": "http://www.w3.org/ns/prov#",
-    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "time": "http://www.w3.org/2006/time#",
 }
 
 
@@ -51,28 +52,37 @@ def extract_resources(graph: Graph, ns_uri: str) -> list[dict]:
     return sorted(resources, key=lambda r: r["name"])
 
 
-def get_resource_turtle(graph: Graph, ns_uri: str, local_name: str) -> str:
-    """Extract all triples where resource is subject, predicate, or object, as Turtle."""
-    uri_variants = _normalize_uri_variants(ns_uri)
+def get_resource_turtle(
+    graph: Graph, ns_uri: str, local_name: str, subject_only: bool = True
+) -> str:
+    """Extract triples for a resource as Turtle.
 
-    # Gather all URIRefs (http/https forms)
+    Args:
+        graph: RDF graph to extract from
+        ns_uri: Namespace URI
+        local_name: Local name of the resource
+        subject_only: If True, only return triples where resource is subject.
+                      If False, include triples where resource appears as predicate or object.
+    """
+    uri_variants = _normalize_uri_variants(ns_uri)
     uris = set(URIRef(uri_base + local_name) for uri_base in uri_variants)
 
-    # Create subgraph with all triples where resource occurs in any position
     subgraph = Graph()
     for prefix, ns in NAMESPACES.items():
         subgraph.bind(prefix, ns)
 
     for uri in uris:
-        # Resource as subject
+        # Resource as subject (always included)
         for p, o in graph.predicate_objects(subject=uri):
             subgraph.add((uri, p, o))
-        # Resource as predicate
-        for s, o in graph.subject_objects(predicate=uri):
-            subgraph.add((s, uri, o))
-        # Resource as object
-        for s, p in graph.subject_predicates(object=uri):
-            subgraph.add((s, p, uri))
+
+        if not subject_only:
+            # Resource as predicate
+            for s, o in graph.subject_objects(predicate=uri):
+                subgraph.add((s, uri, o))
+            # Resource as object
+            for s, p in graph.subject_predicates(object=uri):
+                subgraph.add((s, p, uri))
 
     if len(subgraph) == 0:
         return ""
