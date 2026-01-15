@@ -1,7 +1,9 @@
 """HTTP client and fetch utilities."""
 
+import re
+
 import httpx
-from html_to_markdown import convert
+from html_to_markdown import ConversionOptions, convert
 
 http_client = httpx.AsyncClient(
     timeout=30.0,
@@ -24,6 +26,24 @@ async def fetch_html(url: str) -> str:
         raise Exception(f"Error fetching {url}: {str(e)}")
 
 
+# Configure markdown conversion for clean MCP output
+_md_options = ConversionOptions(
+    heading_style="atx",  # Use # style headings (cleaner)
+    code_block_style="fenced",  # Use ``` fenced code blocks
+)
+
+
 def html_to_markdown(html: str) -> str:
-    """Convert HTML content to Markdown."""
-    return convert(html)
+    """Convert HTML content to Markdown.
+
+    Sanitizes HTML to work around html-to-markdown library bugs with
+    certain Unicode characters (e.g., NBSP) that cause byte boundary panics.
+    """
+    # Replace non-breaking spaces with regular spaces to avoid Rust panic
+    # See: https://github.com/kreuzberg-dev/html-to-markdown/issues
+    sanitized = html.replace("\u00a0", " ").replace("&nbsp;", " ")
+
+    md = convert(sanitized, _md_options)
+    md = re.sub(r"\n{3,}", "\n\n", md)  # Max 2 consecutive newlines
+
+    return md.strip()

@@ -85,3 +85,10 @@ fastmcp run src/main.py:mcp --transport http --port 8000
 |----------|-------------|---------|
 | `SPEC_VERSIONS` | Filter by version (e.g., `"1.2"`) | All |
 | `CACHE_TTL` | Cache TTL in seconds | `86400` (24 hours) |
+
+## Acknowledgments
+
+- [W3C](https://www.w3.org/) for the specifications.
+- [html-to-markdown](https://github.com/kreuzberg-dev/html-to-markdown) for converting HTML to Markdown.
+- [RDFLib](https://github.com/RDFLib/rdflib) for the RDF library.
+- [FastMCP](https://github.com/fastmcp/fastmcp) for the MCP server.
