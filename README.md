@@ -90,4 +90,4 @@ fastmcp run src/main.py:mcp --transport http --port 8000
 - [W3C](https://www.w3.org/) for the specifications.
 - [html-to-markdown](https://github.com/kreuzberg-dev/html-to-markdown) for converting HTML to Markdown.
 - [RDFLib](https://github.com/RDFLib/rdflib) for the RDF library.
-- [FastMCP](https://github.com/fastmcp/fastmcp) for the MCP server.
+- [FastMCP](https://github.com/jlowin/fastmcp) for the MCP server.
