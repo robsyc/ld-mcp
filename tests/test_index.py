@@ -4,18 +4,13 @@ Validate all specifications and namespaces defined in index.yaml.
 Run with: pytest tests/test_index.py -v
 """
 
-import sys
-from pathlib import Path
-
 import httpx
 import pytest
 from bs4 import BeautifulSoup
 from rdflib import Graph
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from config import load_index
-from parsers import NAMESPACES, extract_section_content, flatten_toc, parse_w3c_toc
+from ld_mcp.config import load_index
+from ld_mcp.parsers import NAMESPACES, extract_section_content, flatten_toc, parse_w3c_toc
 
 # --- Dynamic test generation from index.yaml ---
 

@@ -4,7 +4,7 @@ from typing import Optional
 
 from bs4 import BeautifulSoup
 
-from fetch import html_to_markdown
+from ld_mcp.fetch import html_to_markdown
 
 
 def extract_section_content(soup: BeautifulSoup, section_id: str) -> Optional[str]:

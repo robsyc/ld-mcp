@@ -5,7 +5,7 @@ from typing import Optional
 
 from bs4 import BeautifulSoup, Tag
 
-from models import TOCItem
+from ld_mcp.models import TOCItem
 
 
 def parse_sections_as_toc(soup: BeautifulSoup, skip_acknowledgements: bool = True) -> list[TOCItem]:

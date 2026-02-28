@@ -24,24 +24,40 @@ See the `index.yaml` file for the full list of specifications and namespaces. Pl
 
 Fork the repo, configure the `index.yaml` and deploy to your own [fastmcp.cloud](https://fastmcp.cloud) instance (free for personal use). Afterwards, you can use their web ui to connect your agentic coding tool (e.g. Cursor, Claude Desktop, etc.) to the MCP server.
 
-### Option 2: Run Locally
+### Option 2: Install as a tool
+
+Prerequisites: Python 3.11+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 git clone https://github.com/robsyc/ld-mcp && cd ld-mcp
-python -m venv venv && source venv/bin/activate
-pip install -e .
-
-# Run with stdio (for MCP clients)
-python src/main.py
+uv tool install .
 ```
 
-Add this to your `.claude/` or `.cursor/mcp.json` file:
+Then add to your `.cursor/mcp.json` or Claude Desktop config:
 ```json
 {
   "mcpServers": {
     "ld-mcp": {
-      "command": "/home/user/path/to/ld-mcp/venv/bin/python",
-      "args": ["/home/user/path/to/ld-mcp/src/main.py"]
+      "command": "ld-mcp"
+    }
+  }
+}
+```
+
+### Option 3: Run with uv
+
+```bash
+git clone https://github.com/robsyc/ld-mcp && cd ld-mcp
+uv sync
+```
+
+Add to your `.cursor/mcp.json` or Claude Desktop config:
+```json
+{
+  "mcpServers": {
+    "ld-mcp": {
+      "command": "uv",
+      "args": ["tool", "run", "ld-mcp"]
     }
   }
 }
@@ -57,33 +73,34 @@ Add this to your `.claude/` or `.cursor/mcp.json` file:
 | `list_resources(ns_key)` | List classes/properties in a namespace |
 | `get_resource(ns_key, resource)` | Get Turtle definition of a resource |
 
-## Development
-
-```bash
-pip install -e ".[dev]"
-
-# Validate all specs/namespaces
-pytest tests/test_index.py -v
-
-# Lint
-ruff check src/ tests/
-
-# Local HTTP server (for testing)
-fastmcp run src/main.py:mcp --transport http --port 8000
-```
-
-### Adding Specifications
-
-1. Add entry to `src/index.yaml`
-2. Run `pytest tests/test_index.py -v -k "your_spec_key"`
-3. Push to main — CI validates automatically
-
 ## Configuration
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `SPEC_VERSIONS` | Filter by version (e.g., `"1.2"`) | All |
 | `CACHE_TTL` | Cache TTL in seconds | `86400` (24 hours) |
+| `INDEX_PATH` | Path to a custom `index.yaml` | Bundled default |
+
+## Development
+
+```bash
+uv sync --group dev
+
+# Validate all specs/namespaces
+uv run pytest tests/test_index.py -v
+
+# Lint
+uv run ruff check src/ tests/
+
+# MCP Inspector (web UI for testing tools)
+uv run fastmcp dev inspector src/ld_mcp/server.py:mcp
+```
+
+### Adding Specifications
+
+1. Add entry to `src/ld_mcp/index.yaml`
+2. Run `uv run pytest tests/test_index.py -v -k "your_spec_key"`
+3. Push to main — CI validates automatically
 
 ## Acknowledgments
 

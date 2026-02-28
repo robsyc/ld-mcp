@@ -1,13 +1,13 @@
 """Parsers for W3C specifications and RDF namespaces."""
 
-from parsers.content import extract_section_content
-from parsers.namespace import (
+from ld_mcp.parsers.content import extract_section_content
+from ld_mcp.parsers.namespace import (
     NAMESPACES,
     extract_resources,
     fetch_namespace_graph,
     get_resource_turtle,
 )
-from parsers.toc import (
+from ld_mcp.parsers.toc import (
     flatten_toc,
     parse_headings_as_toc,
     parse_sections_as_toc,

@@ -1,7 +1,6 @@
-"""
-Configuration for the Linked Data MCP server.
-"""
+"""Configuration for the Linked Data MCP server."""
 
+from importlib.resources import files
 from pathlib import Path
 from typing import Optional
 
@@ -18,18 +17,25 @@ class Settings(BaseSettings):
         SPEC_VERSIONS: Comma-separated list of versions to include (e.g., "1.1,1.2")
                        If not set, all versions are included.
         CACHE_TTL: Cache TTL in seconds. Default: 86400 (24 hours)
+        INDEX_PATH: Path to a custom index.yaml file. Falls back to bundled default.
     """
 
     spec_versions: Optional[str] = Field(
         default=None,
         alias="SPEC_VERSIONS",
-        description="Comma-separated versions to include (e.g., '1.2' or '1.1,1.2')"
+        description="Comma-separated versions to include (e.g., '1.2' or '1.1,1.2')",
     )
 
     cache_ttl: int = Field(
         default=86400,  # 24 hours
         alias="CACHE_TTL",
-        description="Cache TTL in seconds (for in-memory cache)"
+        description="Cache TTL in seconds (for in-memory cache)",
+    )
+
+    index_path: Optional[str] = Field(
+        default=None,
+        alias="INDEX_PATH",
+        description="Path to a custom index.yaml file (overrides bundled default)",
     )
 
     @property
@@ -52,8 +58,13 @@ settings = Settings()
 
 
 def get_index_path() -> Path:
-    """Get path to the index.yaml file."""
-    return Path(__file__).parent / "index.yaml"
+    """Get path to the index.yaml file.
+
+    Uses INDEX_PATH env var if set, otherwise falls back to the bundled default.
+    """
+    if settings.index_path:
+        return Path(settings.index_path)
+    return Path(str(files("ld_mcp").joinpath("index.yaml")))
 
 
 def load_index() -> dict:
@@ -82,7 +93,8 @@ def get_filtered_index() -> dict:
 
         if "specifications" in family_data:
             filtered_specs = [
-                spec for spec in family_data["specifications"]
+                spec
+                for spec in family_data["specifications"]
                 if settings.version_allowed(spec.get("version"))
             ]
             filtered_family["specifications"] = filtered_specs

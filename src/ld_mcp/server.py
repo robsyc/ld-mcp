@@ -13,10 +13,10 @@ from bs4 import BeautifulSoup
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 
-from cache import cache
-from config import get_filtered_index
-from fetch import fetch_html
-from parsers import (
+from ld_mcp.cache import cache
+from ld_mcp.config import get_filtered_index
+from ld_mcp.fetch import fetch_html
+from ld_mcp.parsers import (
     extract_resources,
     extract_section_content,
     fetch_namespace_graph,
@@ -292,5 +292,10 @@ async def get_resource(
     return turtle
 
 
-if __name__ == "__main__":
+def main():
+    """Run the MCP server (stdio transport)."""
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

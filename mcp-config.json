@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ld-mcp": {
+      "command": "uv",
+      "args": ["tool", "run", "ld-mcp"]
+    }
+  }
+}
