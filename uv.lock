@@ -595,7 +595,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
-    { name = "fastmcp", specifier = ">=2.14.3" },
+    { name = "fastmcp", specifier = ">=3.0.0,<4" },
     { name = "html-to-markdown", specifier = ">=2.20.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
